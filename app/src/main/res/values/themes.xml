@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.DocScanner" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/emerald</item>
+        <item name="colorPrimaryDark">@color/slate900</item>
+        <item name="colorSecondary">@color/indigo</item>
+        <item name="android:colorBackground">@color/slate900</item>
+        <item name="android:statusBarColor">@color/slate900</item>
+        <item name="android:navigationBarColor">@color/slate900</item>
+    </style>
+    <style name="Theme.DocScanner.Black" parent="Theme.DocScanner">
+        <item name="android:colorBackground">@color/black</item>
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
+</resources>

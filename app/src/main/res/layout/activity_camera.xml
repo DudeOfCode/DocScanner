@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.docscanner.app.view.GridOverlayView
+        android:id="@+id/gridOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- focus reticle -->
+    <View
+        android:id="@+id/focusRing"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/bg_focus_ring"
+        android:visibility="gone" />
+
+    <!-- top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_circle_dark"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/pageCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_pill_emerald"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="0 Pages"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnFlash"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_circle_dark"
+            android:src="@drawable/ic_flash"
+            android:contentDescription="Flash" />
+
+        <ImageButton
+            android:id="@+id/btnGrid"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_circle_dark"
+            android:src="@drawable/ic_grid"
+            android:contentDescription="Grid" />
+
+        <ImageButton
+            android:id="@+id/btnSwitch"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_circle_dark"
+            android:src="@drawable/ic_switch_camera"
+            android:contentDescription="Switch camera" />
+
+        <ImageButton
+            android:id="@+id/btnTune"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_circle_dark"
+            android:src="@drawable/ic_tune"
+            android:contentDescription="Manual controls" />
+    </LinearLayout>
+
+    <!-- manual controls panel -->
+    <include
+        android:id="@+id/manualPanel"
+        layout="@layout/view_manual_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="150dp" />
+
+    <!-- bottom bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:background="@color/slate900"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="16dp"
+        android:weightSum="4">
+
+        <LinearLayout
+            android:id="@+id/btnImportImages"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_import" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Images" android:textColor="@color/white" android:textSize="11sp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center">
+            <Button
+                android:id="@+id/btnShutter"
+                android:layout_width="78dp"
+                android:layout_height="78dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_shutter" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/btnFinish"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:alpha="0.4">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_check" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Finish" android:textColor="@color/white" android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/flashOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:alpha="0" />
+</FrameLayout>

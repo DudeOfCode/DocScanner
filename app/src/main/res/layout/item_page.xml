@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:layout_marginBottom="16dp"
+    android:background="@drawable/bg_card" android:padding="8dp">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical">
+        <CheckBox android:id="@+id/pageCheck" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/pageLabel" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="Page 1" android:textColor="@color/white" android:textStyle="bold" android:textSize="13sp" />
+        <ImageButton android:id="@+id/btnUp" android:layout_width="38dp" android:layout_height="38dp" android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_arrow_up" />
+        <ImageButton android:id="@+id/btnDown" android:layout_width="38dp" android:layout_height="38dp" android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_arrow_down" />
+        <ImageButton android:id="@+id/btnCrop" android:layout_width="38dp" android:layout_height="38dp" android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_crop" />
+        <ImageButton android:id="@+id/btnFilter" android:layout_width="38dp" android:layout_height="38dp" android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_magic" />
+        <ImageButton android:id="@+id/btnRotate" android:layout_width="38dp" android:layout_height="38dp" android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_rotate" />
+        <ImageButton android:id="@+id/btnDelete" android:layout_width="38dp" android:layout_height="38dp" android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_delete" />
+    </LinearLayout>
+
+    <ImageView android:id="@+id/pageImage" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:adjustViewBounds="true"
+        android:layout_marginTop="6dp" android:background="@color/white" android:scaleType="fitCenter" />
+</LinearLayout>

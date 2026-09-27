@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/slate900">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:background="@color/slate800" android:padding="10dp">
+        <ImageButton android:id="@+id/btnBack" android:layout_width="40dp" android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_back" />
+        <EditText android:id="@+id/docTitle" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:background="@android:color/transparent"
+            android:textColor="@color/emerald" android:textStyle="bold" android:textSize="18sp"
+            android:maxLines="1" android:inputType="text" android:hint="Title" />
+    </LinearLayout>
+
+    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:background="@color/slate800" android:scrollbars="none">
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="8dp">
+            <Button android:id="@+id/btnScan" style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="3dp"
+                android:background="@drawable/bg_btn_slate" android:drawableStart="@drawable/ic_camera"
+                android:drawablePadding="4dp" android:text="Scan" android:textColor="@color/white" android:textSize="12sp" />
+            <Button android:id="@+id/btnAddImages" style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="3dp"
+                android:background="@drawable/bg_btn_slate" android:drawableStart="@drawable/ic_import"
+                android:drawablePadding="4dp" android:text="Add Images" android:textColor="@color/white" android:textSize="12sp" />
+            <Button android:id="@+id/btnAddPdf" style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="3dp"
+                android:background="@drawable/bg_btn_slate" android:drawableStart="@drawable/ic_pdf"
+                android:drawablePadding="4dp" android:text="Add PDF" android:textColor="@color/white" android:textSize="12sp" />
+            <Button android:id="@+id/btnOcr" style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="3dp"
+                android:background="@drawable/bg_btn_slate" android:drawableStart="@drawable/ic_text"
+                android:drawablePadding="4dp" android:text="OCR" android:textColor="@color/white" android:textSize="12sp" />
+            <Button android:id="@+id/btnExport" style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="3dp"
+                android:background="@drawable/bg_btn_emerald" android:drawableStart="@drawable/ic_pdf"
+                android:drawablePadding="4dp" android:text="Export PDF" android:textColor="@color/white" android:textSize="12sp" />
+            <Button android:id="@+id/btnDeleteDoc" style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="3dp"
+                android:background="@drawable/bg_btn_slate" android:drawableStart="@drawable/ic_delete"
+                android:drawablePadding="4dp" android:text="Delete" android:textColor="@color/white" android:textSize="12sp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- selection toolbar -->
+    <LinearLayout android:id="@+id/selectionToolbar" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal"
+        android:background="@color/slate800" android:gravity="center_vertical"
+        android:padding="8dp" android:visibility="gone">
+        <TextView android:id="@+id/selectionCount" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="0 selected" android:textColor="@color/emerald" android:textSize="13sp" android:paddingStart="6dp" />
+        <Button android:id="@+id/btnSelectAll" style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="All" android:textColor="@color/white" android:textSize="12sp" />
+        <Button android:id="@+id/btnSelectNone" style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="None" android:textColor="@color/white" android:textSize="12sp" />
+        <Button android:id="@+id/btnExportSel" style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Export" android:textColor="@color/emerald" android:textSize="12sp" />
+        <Button android:id="@+id/btnDeleteSel" style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Delete" android:textColor="@color/red" android:textSize="12sp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pagesList" android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1" android:padding="10dp"
+        android:clipToPadding="false" />
+
+    <!-- OCR result panel -->
+    <LinearLayout android:id="@+id/ocrPanel" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="vertical"
+        android:background="@color/slate800" android:padding="12dp" android:visibility="gone">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:id="@+id/ocrStatus" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Recognized Text" android:textColor="@color/emerald" android:textStyle="bold" android:textSize="12sp" />
+            <ProgressBar android:id="@+id/ocrProgress" android:layout_width="22dp" android:layout_height="22dp"
+                android:layout_marginEnd="8dp" android:visibility="gone" />
+            <ImageButton android:id="@+id/btnCopyOcr" android:layout_width="36dp" android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_copy" />
+            <ImageButton android:id="@+id/btnCloseOcr" android:layout_width="36dp" android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless" android:src="@drawable/ic_close" />
+        </LinearLayout>
+        <EditText android:id="@+id/ocrText" android:layout_width="match_parent" android:layout_height="180dp"
+            android:background="@color/slate900" android:gravity="top" android:padding="10dp"
+            android:textColor="@color/white" android:textSize="12sp" android:inputType="textMultiLine" android:overScrollMode="always" android:scrollbars="vertical" />
+    </LinearLayout>
+</LinearLayout>
