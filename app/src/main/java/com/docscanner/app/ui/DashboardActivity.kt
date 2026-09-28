@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.lifecycleScope
+import android.graphics.Color
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -159,6 +160,21 @@ class DashboardActivity : AppCompatActivity() {
         startActivity(Intent(this, DocumentActivity::class.java))
     }
 
+        private fun loadSmartlinkBanner() {
+        val wv = b.adsterraView
+        wv.settings.javaScriptEnabled = true
+        wv.settings.domStorageEnabled = true
+        wv.webViewClient = object : android.webkit.WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: android.webkit.WebView,
+                request: android.webkit.WebResourceRequest
+            ): Boolean {
+                // keep http/https inside the banner; block jumps into other apps
+                return request.url.scheme !in listOf("http", "https")
+            }
+        }
+        wv.loadUrl("https://www.profitableratecpmnetwork.com/q2rvva0sh9?key=820752a224bdea633c6a0b978fc8ff86")
+    }
     private fun maybeRequestNotifications() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
