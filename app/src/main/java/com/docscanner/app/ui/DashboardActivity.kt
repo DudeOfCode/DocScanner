@@ -160,19 +160,44 @@ class DashboardActivity : AppCompatActivity() {
         startActivity(Intent(this, DocumentActivity::class.java))
     }
 
-        private fun loadSmartlinkBanner() {
+            private fun loadSmartlinkBanner() {
         val wv = b.adsterraView
-        wv.settings.javaScriptEnabled = true
-        wv.settings.domStorageEnabled = true
+        val s = wv.settings
+        s.javaScriptEnabled = true
+        s.domStorageEnabled = true
+        s.loadWithOverviewMode = true
+        s.useWideViewPort = true
+        s.javaScriptCanOpenWindowsAutomatically = true
+        s.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+
+        // Many ad pages block the default WebView user agent (it contains "; wv")
+        s.userAgentString = s.userAgentString.replace("; wv", "")
+
+        android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true)
+        wv.setBackgroundColor(android.graphics.Color.WHITE)
+
+        wv.webChromeClient = android.webkit.WebChromeClient()
         wv.webViewClient = object : android.webkit.WebViewClient() {
             override fun shouldOverrideUrlLoading(
                 view: android.webkit.WebView,
                 request: android.webkit.WebResourceRequest
-            ): Boolean {
-                // keep http/https inside the banner; block jumps into other apps
-                return request.url.scheme !in listOf("http", "https")
+            ): Boolean = request.url.scheme !in listOf("http", "https")
+
+            override fun onReceivedError(
+                view: android.webkit.WebView,
+                request: android.webkit.WebResourceRequest,
+                error: android.webkit.WebResourceError
+            ) {
+                if (request.isForMainFrame) {
+                    Toast.makeText(
+                        this@DashboardActivity,
+                        "Ad error: ${error.description}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
+
         wv.loadUrl("https://www.profitableratecpmnetwork.com/q2rvva0sh9?key=820752a224bdea633c6a0b978fc8ff86")
     }
     private fun maybeRequestNotifications() {
