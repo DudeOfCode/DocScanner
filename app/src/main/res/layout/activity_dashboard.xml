@@ -88,13 +88,20 @@
                 android:gravity="center"
                 android:textColor="@color/slate400" />
 
-           <WebView
-        android:id="@+id/adsterraView"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginTop="8dp" />   
-         
         </LinearLayout>
 
     </FrameLayout>
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <!-- (keep RecyclerView + emptyState exactly as they are) -->
+    </FrameLayout>
+
+    <WebView
+        android:id="@+id/adsterraView"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp" />  
 </LinearLayout>
