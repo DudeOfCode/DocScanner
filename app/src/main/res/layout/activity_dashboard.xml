@@ -55,7 +55,9 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/docsGrid"
@@ -86,13 +88,13 @@
                 android:gravity="center"
                 android:textColor="@color/slate400" />
 
-            <WebView
+            
+        </LinearLayout>
+<WebView
         android:id="@+id/adsterraView"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_marginTop="8dp" />   
-        </LinearLayout>
-
         
     </FrameLayout>
 </LinearLayout>
