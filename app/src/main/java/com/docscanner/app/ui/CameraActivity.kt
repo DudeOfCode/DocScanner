@@ -37,7 +37,7 @@ import com.docscanner.app.databinding.ViewManualControlsBinding
 import com.docscanner.app.util.ScanSession
 import java.io.File
 import kotlin.math.roundToInt
-import com.google.common.util.concurrent.ListenableFuture
+
 
 @OptIn(ExperimentalCamera2Interop::class)
 class CameraActivity : AppCompatActivity() {
