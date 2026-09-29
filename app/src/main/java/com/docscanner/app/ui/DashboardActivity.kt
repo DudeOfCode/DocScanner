@@ -163,33 +163,6 @@ class DashboardActivity : AppCompatActivity() {
         startActivity(Intent(this, DocumentActivity::class.java))
     }
      
-    override fun onDestroy() {
-        b.adsterraView.destroy()
-        super.onDestroy()
-    }
-    
-            override fun shouldOverrideUrlLoading(
-                view: android.webkit.WebView,
-                request: android.webkit.WebResourceRequest
-            ): Boolean = request.url.scheme !in listOf("http", "https")
-
-            override fun onReceivedError(
-                view: android.webkit.WebView,
-                request: android.webkit.WebResourceRequest,
-                error: android.webkit.WebResourceError
-            ) {
-                if (request.isForMainFrame) {
-                    Toast.makeText(
-                        this@DashboardActivity,
-                        "Ad error: ${error.description}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-
-        wv.loadUrl("https://www.profitableratecpmnetwork.com/q2rvva0sh9?key=820752a224bdea633c6a0b978fc8ff86")
-    }
     private fun maybeRequestNotifications() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
