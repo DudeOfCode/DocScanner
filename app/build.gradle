@@ -45,7 +45,7 @@ dependencies {
     implementation "androidx.camera:camera-camera2:$camerax"
     implementation "androidx.camera:camera-lifecycle:$camerax"
     implementation "androidx.camera:camera-view:$camerax"
-
+implementation "com.google.common.util.concurrent.ListenableFuture"
     // ML Kit on-device OCR
     implementation 'com.google.mlkit:text-recognition:16.0.1'
 
