@@ -54,15 +54,7 @@
         android:layout_height="1dp"
         android:background="@color/slate700" />
 
-<com.google.android.gms.ads.AdView
-    android:id="@+id/adView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom|center_horizontal"
-    app:adSize="BANNER"
-    app:adUnitId="ca-app-pub-2867061040687926/9637586324" />
 
-    
     <FrameLayout
         android:layout_width="match_parent"    
         android:layout_height="0dp"
@@ -100,12 +92,14 @@
         </LinearLayout>
 
     </FrameLayout>
-      <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <!-- (keep RecyclerView + emptyState exactly as they are) -->
-    </FrameLayout>
 
-    
+<com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-2867061040687926/9637586324" />
+
+     
 </LinearLayout>
