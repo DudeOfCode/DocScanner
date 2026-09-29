@@ -25,6 +25,8 @@ import kotlinx.coroutines.withContext
 import androidx.lifecycle.lifecycleScope
 import android.graphics.Color
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.AdRequest
+
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityDashboardBinding
@@ -51,7 +53,7 @@ class DashboardActivity : AppCompatActivity() {
         b = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(b.root)
         MobileAds.initialize(this) {}
-
+        b.adView.loadAd(AdRequest.Builder().build())
         adapter = DocumentsAdapter { doc -> openDoc(doc) }
         b.docsGrid.layoutManager = GridLayoutManager(this, 2)
         b.docsGrid.adapter = adapter
