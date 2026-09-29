@@ -98,10 +98,5 @@
         <!-- (keep RecyclerView + emptyState exactly as they are) -->
     </FrameLayout>
 
-    <WebView
-        android:id="@+id/adsterraView"
-        android:layout_width="300dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp" />  
+    
 </LinearLayout>
