@@ -162,34 +162,7 @@ class DashboardActivity : AppCompatActivity() {
         refresh()
         startActivity(Intent(this, DocumentActivity::class.java))
     }
-
-        private fun loadAdsterraBanner() {
-        val html = """
-            <html><head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>body{margin:0;padding:0;background:transparent;}</style>
-            </head><body>
-            <script>
-              atOptions = {
-                'key' : '4ed641bbc6e9a1e602bbbe42a2074d6f',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-              };
-            </script>
-            <script src="https://www.highrevenueformat.com/4ed641bbc6e9a1e602bbbe42a2074d6f/invoke.js"></script>
-            </body></html>
-        """.trimIndent()
-
-        b.adsterraView.settings.javaScriptEnabled = true
-        b.adsterraView.settings.domStorageEnabled = true
-        b.adsterraView.setBackgroundColor(Color.TRANSPARENT)
-        b.adsterraView.loadDataWithBaseURL(
-            "https://www.highrevenueformat.com/", html, "text/html", "UTF-8", null
-        )
-    }
-
+     
     override fun onDestroy() {
         b.adsterraView.destroy()
         super.onDestroy()
