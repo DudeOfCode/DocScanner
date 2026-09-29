@@ -168,24 +168,6 @@ class DashboardActivity : AppCompatActivity() {
         super.onDestroy()
     }
     
-            private fun loadSmartlinkBanner() {
-        val wv = b.adsterraView
-        val s = wv.settings
-        s.javaScriptEnabled = true
-        s.domStorageEnabled = true
-        s.loadWithOverviewMode = true
-        s.useWideViewPort = true
-        s.javaScriptCanOpenWindowsAutomatically = true
-        s.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-
-        // Many ad pages block the default WebView user agent (it contains "; wv")
-        s.userAgentString = s.userAgentString.replace("; wv", "")
-
-        android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true)
-        wv.setBackgroundColor(android.graphics.Color.WHITE)
-
-        wv.webChromeClient = android.webkit.WebChromeClient()
-        wv.webViewClient = object : android.webkit.WebViewClient() {
             override fun shouldOverrideUrlLoading(
                 view: android.webkit.WebView,
                 request: android.webkit.WebResourceRequest
