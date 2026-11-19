@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.docscanner.app.data.DocRepository
 import com.docscanner.app.databinding.ActivityDocumentBinding
 import com.docscanner.app.util.ImageUtils
@@ -35,6 +37,19 @@ class DocumentActivity : AppCompatActivity() {
     }
     private val pickPdf = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { importPdf(it) }
+    }
+
+    private var pendingPdf: File? = null
+    private val savePdf = registerForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) { uri ->
+        val f = pendingPdf
+        if (uri != null && f != null) {
+            try {
+                contentResolver.openOutputStream(uri)?.use { o -> f.inputStream().use { it.copyTo(o) } }
+                toast("PDF saved")
+            } catch (e: Exception) {
+                toast("Save failed: ${e.message}")
+            }
+        }
     }
 
     private fun doc() = DocRepository.findDoc(DocRepository.viewingDocId)
@@ -257,9 +272,52 @@ class DocumentActivity : AppCompatActivity() {
 
     private fun exportPdf(paths: List<String>, title: String) {
         if (paths.isEmpty()) { toast("No pages to export"); return }
+        val qualities = PdfExporter.Quality.values()
+        AlertDialog.Builder(this)
+            .setTitle("PDF quality")
+            .setItems(qualities.map { it.label }.toTypedArray()) { _, which ->
+                buildPdf(paths, title, qualities[which])
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun buildPdf(paths: List<String>, title: String, quality: PdfExporter.Quality) {
+        toast("Creating PDF...")
+        b.btnExport.isEnabled = false
+        b.btnExportSel.isEnabled = false
+        lifecycleScope.launch {
+            try {
+                val file = withContext(Dispatchers.Default) {
+                    PdfExporter.export(this@DocumentActivity, title, paths, quality)
+                }
+                pendingPdf = file
+                showPdfReady(file)
+            } catch (e: OutOfMemoryError) {
+                toast("Not enough memory. Try the Small file option or export fewer pages.")
+            } catch (e: Exception) {
+                toast("Export failed: ${e.message}")
+            } finally {
+                b.btnExport.isEnabled = true
+                b.btnExportSel.isEnabled = true
+            }
+        }
+    }
+
+    private fun showPdfReady(file: File) {
+        val size = android.text.format.Formatter.formatShortFileSize(this, file.length())
+        AlertDialog.Builder(this)
+            .setTitle("PDF ready")
+            .setMessage("${file.name}\n$size")
+            .setPositiveButton("Share") { _, _ -> sharePdf(file) }
+            .setNeutralButton("Save to device") { _, _ -> savePdf.launch(file.name) }
+            .setNegativeButton("Close", null)
+            .show()
+    }
+
+    private fun sharePdf(file: File) {
         try {
-            val outFile = PdfExporter.export(this, title, paths)
-            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", outFile)
+            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
             val share = Intent(Intent.ACTION_SEND).apply {
                 type = "application/pdf"
                 putExtra(Intent.EXTRA_STREAM, uri)
@@ -267,7 +325,7 @@ class DocumentActivity : AppCompatActivity() {
             }
             startActivity(Intent.createChooser(share, "Share PDF"))
         } catch (e: Exception) {
-            toast("Export failed: ${e.message}")
+            toast("Share failed: ${e.message}")
         }
     }
 
