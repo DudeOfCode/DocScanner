@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.docscanner.app.data.DocRepository
 import com.docscanner.app.databinding.ActivityDocumentBinding
+import com.docscanner.app.util.ImageExporter
 import com.docscanner.app.util.ImageUtils
 import com.docscanner.app.util.OcrHelper
 import com.docscanner.app.util.PdfExporter
@@ -48,6 +50,21 @@ class DocumentActivity : AppCompatActivity() {
                 toast("PDF saved")
             } catch (e: Exception) {
                 toast("Save failed: ${e.message}")
+            }
+        }
+    }
+
+    private var pendingImages: List<File> = emptyList()
+    private val saveImages = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { treeUri ->
+        val files = pendingImages
+        if (treeUri != null && files.isNotEmpty()) {
+            lifecycleScope.launch {
+                try {
+                    val n = withContext(Dispatchers.IO) { copyToTree(treeUri, files) }
+                    toast("Saved $n image(s)")
+                } catch (e: Exception) {
+                    toast("Save failed: ${e.message}")
+                }
             }
         }
     }
@@ -91,7 +108,7 @@ class DocumentActivity : AppCompatActivity() {
         b.btnAddImages.setOnClickListener { pickImages.launch("image/*") }
         b.btnAddPdf.setOnClickListener { pickPdf.launch("application/pdf") }
         b.btnOcr.setOnClickListener { runOcr() }
-        b.btnExport.setOnClickListener { exportPdf(doc()?.pages ?: emptyList(), doc()?.title ?: "document") }
+        b.btnExport.setOnClickListener { exportPages(doc()?.pages ?: emptyList(), doc()?.title ?: "document") }
         b.btnDeleteDoc.setOnClickListener { confirmDeleteDoc() }
 
         b.btnSelectAll.setOnClickListener { selected.clear(); (doc()?.pages?.indices ?: IntRange.EMPTY).forEach { selected.add(it) }; adapter.notifyDataSetChanged(); refreshSelection() }
@@ -100,7 +117,7 @@ class DocumentActivity : AppCompatActivity() {
             val d2 = doc() ?: return@setOnClickListener
             val paths = selected.sorted().mapNotNull { d2.pages.getOrNull(it) }
             if (paths.isEmpty()) { toast("No pages selected"); return@setOnClickListener }
-            exportPdf(paths, (d2.title) + "_selected")
+            exportPages(paths, (d2.title) + "_selected")
         }
         b.btnDeleteSel.setOnClickListener { deleteSelected() }
 
@@ -268,6 +285,95 @@ class DocumentActivity : AppCompatActivity() {
                 b.ocrText.setText(e.message ?: "error")
             }
         }
+    }
+
+    private fun exportPages(paths: List<String>, title: String) {
+        if (paths.isEmpty()) { toast("No pages to export"); return }
+        val options = arrayOf(
+            "PDF document",
+            ImageExporter.Format.JPG.label,
+            ImageExporter.Format.PNG.label
+        )
+        AlertDialog.Builder(this)
+            .setTitle("Export as")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> exportPdf(paths, title)
+                    1 -> buildImages(paths, title, ImageExporter.Format.JPG)
+                    else -> buildImages(paths, title, ImageExporter.Format.PNG)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun buildImages(paths: List<String>, title: String, format: ImageExporter.Format) {
+        toast("Preparing images...")
+        b.btnExport.isEnabled = false
+        b.btnExportSel.isEnabled = false
+        lifecycleScope.launch {
+            try {
+                val files = withContext(Dispatchers.Default) {
+                    ImageExporter.export(this@DocumentActivity, title, paths, format)
+                }
+                if (files.isEmpty()) toast("Nothing to export") else {
+                    pendingImages = files
+                    showImagesReady(files)
+                }
+            } catch (e: OutOfMemoryError) {
+                toast("Not enough memory. Try exporting fewer pages at a time.")
+            } catch (e: Exception) {
+                toast("Export failed: ${e.message}")
+            } finally {
+                b.btnExport.isEnabled = true
+                b.btnExportSel.isEnabled = true
+            }
+        }
+    }
+
+    private fun showImagesReady(files: List<File>) {
+        val total = android.text.format.Formatter.formatShortFileSize(this, files.sumOf { it.length() })
+        AlertDialog.Builder(this)
+            .setTitle("Images ready")
+            .setMessage("${files.size} image(s) - $total")
+            .setPositiveButton("Share") { _, _ -> shareImages(files) }
+            .setNeutralButton("Save to device") { _, _ -> saveImages.launch(null) }
+            .setNegativeButton("Close", null)
+            .show()
+    }
+
+    private fun shareImages(files: List<File>) {
+        try {
+            val uris = ArrayList(files.map { FileProvider.getUriForFile(this, "$packageName.fileprovider", it) })
+            val mime = if (files.first().extension.equals("png", true)) "image/png" else "image/jpeg"
+            val intent = if (uris.size == 1) {
+                Intent(Intent.ACTION_SEND).apply {
+                    type = mime
+                    putExtra(Intent.EXTRA_STREAM, uris[0])
+                }
+            } else {
+                Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                    type = mime
+                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+                }
+            }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(Intent.createChooser(intent, "Share images"))
+        } catch (e: Exception) {
+            toast("Share failed: ${e.message}")
+        }
+    }
+
+    private fun copyToTree(tree: Uri, files: List<File>): Int {
+        val parent = DocumentsContract.buildDocumentUriUsingTree(tree, DocumentsContract.getTreeDocumentId(tree))
+        var saved = 0
+        for (f in files) {
+            val mime = if (f.extension.equals("png", true)) "image/png" else "image/jpeg"
+            val target = DocumentsContract.createDocument(contentResolver, parent, mime, f.name) ?: continue
+            contentResolver.openOutputStream(target)?.use { o -> f.inputStream().use { it.copyTo(o) } }
+            saved++
+        }
+        return saved
     }
 
     private fun exportPdf(paths: List<String>, title: String) {
